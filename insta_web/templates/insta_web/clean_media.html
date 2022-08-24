@@ -1,0 +1,31 @@
+{% extends '_base.html' %}
+
+{% block page_title %}
+    Clean Medias
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-9">
+                <div class="card shadow my-3 p-5">
+                {% if post_method %}
+                    <h2>clean media's is successes:)</h2>
+                {% else %}
+                    <h2>Media's List:</h2>
+                    {% for media in medias %}
+                        <p>
+                            <i>path: </i> <b class="mt-2"> {{ media }} </b> <br>
+                            ------------------
+                        </p>
+                    {% endfor %}
+                    <form class="form-inline my-2 my-lg-0" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-primary">Clean All</button>
+                    </form>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

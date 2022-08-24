@@ -1,0 +1,28 @@
+{% extends '_base.html' %}
+
+{% block page_head %}
+    {% if stories %}
+        <meta http-equiv="refresh" content="30; URL={% url 'instagram_download_url' pk=pk stories=True %}">
+        <link rel="canonical" href="{% url 'instagram_download_url' pk=pk stories=True %}">
+    {% else %}
+        <meta http-equiv="refresh" content="30; URL={% url 'instagram_download_url' pk=pk stories=False %}">
+        <link rel="canonical" href="{% url 'instagram_download_url' pk=pk stories=False %}">
+    {% endif %}
+{% endblock page_head %}
+
+{% block page_title %}
+    Download
+{% endblock page_title %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-9">
+                <div class="card shadow my-3 p-5">
+                    <h1>📥 Status: Downloading from Instagram servers ...</h1>
+                    <h2 class="mt-2">please wait:)</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

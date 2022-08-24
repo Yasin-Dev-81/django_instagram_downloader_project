@@ -1,0 +1,110 @@
+{% extends '_base.html' %}
+{% load humanize %}
+
+
+{% block page_title %}
+    Instagram
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-9">
+                <div class="card shadow my-3 p-5">
+                    <h3>Enter Instagram Url :</h3>
+                    <form class="form-inline my-2 my-lg-0" method="post">
+                        {% csrf_token %}
+                        <div class="container mt-3">
+                            <div class="input-group">
+                                <input type="search"
+                                       class="form-control rounded"
+                                       placeholder="instagram link"
+                                       aria-label="Search"
+                                       aria-describedby="search-addon"
+                                       name="instagram_link"
+                                />
+                                <button type="submit" class="btn btn-outline-primary">search</button>
+                            </div>
+                        </div>
+                    </form>
+                    {% if post_method and not is_page %}
+                        {#                        {{ instagram_data }}#}
+                        <h4>
+                            User Data:
+                        </h4>
+                        <p>
+                            <i>username: </i> <b> <a
+                                href="https://instagram.com/{{ instagram_data.user.username }}">{{ instagram_data.user.username }}</a>
+                        </b> <br>
+                            <i>full name: </i> {{ instagram_data.user.full_name }} <br>
+                        </p>
+                        {% if instagram_post_type %}
+                            <h4>
+                                Post Data:
+                            </h4>
+                            <p>
+                                <i>comment count:</i> {{ instagram_data.comment_count | intcomma }} <br>
+                                <i>like count:</i> {{ instagram_data.like_count | intcomma }} <br>
+                                <i>caption text:</i> {{ instagram_data.caption_text }} <br>
+                            </p>
+                        {% endif %}
+
+                        <a class="btn btn-sm btn-success"
+                           href="{{ instagram_url }}">
+                            <i class="fa fa-download">
+                                Open in instagram
+                            </i>
+                        </a>
+                        <p>
+                            <i>
+                                ***You need to
+                                <a href="{% url 'account_login' %}">
+                                    log in
+                                </a>
+                                to download***
+                            </i>
+                        </p>
+                        {% if stories %}
+                            <a class="btn btn-sm btn-danger"
+                               href="{% url 'instagram_download_url' pk=instagram_data.pk stories=True %}">
+                                <i class="fa fa-download">
+                                    Download
+                                </i>
+                            </a>
+                        {% else %}
+                            <a class="btn btn-sm btn-danger"
+                               href="{% url 'instagram_download_url' pk=instagram_data.pk stories=False %}">
+                                <i class="fa fa-download">
+                                    Download
+                                </i>
+                            </a>
+                        {% endif %}
+                    {% elif is_page %}
+                        <p>
+                            <br>
+                            <b>
+                                Please do not enter a username url!
+                            </b>
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-3">
+
+                <div class="card my-4">
+                    <h5 class="card-header">About</h5>
+                    <div class="card-body">
+                        <p class="card-text">We love python and django. So we created a blog site to share our
+                            thoughts</p>
+                        <a href="#"
+                           class="btn btn-sm btn-danger">
+                            More...
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
