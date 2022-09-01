@@ -10,11 +10,15 @@ import telebot
 # webhook
 @csrf_exempt
 def webhook_view(request):
+    print('--- request meta:', request.META)
     if request.META.get('CONTENT_TYPE') == 'application/json':
-
+        print('--- got data from telegram.')
+        
         json_data = request.body.decode('utf-8')
+        print('--- json data:', json_data)
         update = telebot.types.Update.de_json(json_data)
         tbot.process_new_updates([update])
+        print('--- telebot is updated.')
 
         return HttpResponse("")
     else:
@@ -24,5 +28,5 @@ def webhook_view(request):
             tbot.set_webhook(webhook_url)
             return HttpResponse(f"set webhook: {webhook_url}")
         else:
+            print('--- else-else!')
             raise PermissionDenied
-
