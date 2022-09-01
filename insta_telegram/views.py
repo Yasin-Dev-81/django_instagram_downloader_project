@@ -1,18 +1,13 @@
-import telebot
 from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
-# =========================================================================================>
-from config.settings import TELEGRAM_TOKEN
+
+from .bot import bot as tbot
+import telebot
 
 
-tbot = telebot.TeleBot(TELEGRAM_TOKEN)
-
-
-# For free PythonAnywhere accounts
-# tbot = telebot.TeleBot(TOKEN, threaded=False)
-
-
+# webhook
 @csrf_exempt
 def webhook_view(request):
     if request.META.get('CONTENT_TYPE') == 'application/json':
@@ -31,8 +26,3 @@ def webhook_view(request):
         else:
             raise PermissionDenied
 
-# =========================================================================================>
-
-@tbot.message_handler(commands=['start'])
-def greet(m):
-    tbot.send_message(m.chat.id, "Hello")
