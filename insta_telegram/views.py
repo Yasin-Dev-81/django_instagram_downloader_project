@@ -5,7 +5,7 @@ from django.core.exceptions import PermissionDenied
 from config.settings import TELEGRAM_TOKEN
 
 
-tbot = telebot.AsyncTeleBot(TELEGRAM_TOKEN)
+tbot = telebot.TeleBot(TELEGRAM_TOKEN)
 
 
 # For free PythonAnywhere accounts
