@@ -1,5 +1,6 @@
 import telebot
 from django.core.exceptions import PermissionDenied
+from django.views.decorators.csrf import csrf_exempt
 
 # =========================================================================================>
 from config.settings import TELEGRAM_TOKEN
