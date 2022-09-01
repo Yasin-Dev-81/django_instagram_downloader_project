@@ -26,5 +26,5 @@ urlpatterns = [
     # apps
     path('', include('pages.urls')),
     path('instagram/web/', include('insta_web.urls')),
-    path('instagram/telegram/', include('insta_telegram.urls')),
+    # path('instagram/telegram/', include('insta_telegram.urls')),
 ]
