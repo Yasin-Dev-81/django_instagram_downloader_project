@@ -1,3 +1,4 @@
+from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -13,7 +14,7 @@ def webhook_view(request):
     print('--- request meta:', request.META)
     if request.META.get('CONTENT_TYPE') == 'application/json':
         print('--- got data from telegram.')
-        
+
         json_data = request.body.decode('utf-8')
         print('--- json data:', json_data)
         update = telebot.types.Update.de_json(json_data)
@@ -30,3 +31,9 @@ def webhook_view(request):
         else:
             print('--- else-else!')
             raise PermissionDenied
+
+
+@staff_member_required
+def remove_webhook(request):
+    tbot.remove_webhook()
+    return HttpResponse("webhook removed!")
