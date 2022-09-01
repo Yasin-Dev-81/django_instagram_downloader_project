@@ -76,4 +76,5 @@ def instagram(message):
         bot.reply_to(message, "This link does not belong to Instagram!")
 
 
-bot.infinity_polling()
+if __name__ == '__main__':
+    bot.infinity_polling()
