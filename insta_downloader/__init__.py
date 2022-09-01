@@ -1,2 +1,2 @@
-from .download import *
+from .download import DirectoryDownload
 from .data import *
