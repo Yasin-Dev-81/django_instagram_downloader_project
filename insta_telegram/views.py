@@ -26,7 +26,7 @@ def webhook_view(request):
         if request.user.is_staff:
             webhook_url = request.build_absolute_uri()
             tbot.remove_webhook()
-            tbot.set_webhook(webhook_url)
+            tbot.set_webhook(url=webhook_url, timeout=15)
             return HttpResponse(f"set webhook: {webhook_url}")
         else:
             print('--- else-else!')
