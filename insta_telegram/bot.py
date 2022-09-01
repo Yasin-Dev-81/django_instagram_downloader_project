@@ -2,12 +2,14 @@ import requests
 import telebot
 from telebot import types
 
+from config import settings
 from insta_downloader import DirectoryDownload
 from config.settings import TELEGRAM_TOKEN, MEDIA_ROOT
 
 import os
 import datetime
 
+from insta_web.models import InstagramData
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN, threaded=False)
 
