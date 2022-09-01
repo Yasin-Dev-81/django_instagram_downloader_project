@@ -39,7 +39,7 @@ class DirectoryDownload(InstagramData, Instagram, threading.Thread):
             resource_dict = {
                 'pk': self.pk,
                 'url': self.data.get('thumbnail_url').__str__(),
-                'path': os.path.join(self.pk_folder_path, '%s.jpg' % (self.pk,)).__str__(),
+                # 'path': os.path.join(self.pk_folder_path, '%s.jpg' % (self.pk,)),
                 'media_type': 1
             }
             resources.append(resource_dict)
@@ -47,7 +47,7 @@ class DirectoryDownload(InstagramData, Instagram, threading.Thread):
             resource_dict = {
                 'pk': self.pk,
                 'url': self.data.get('video_url').__str__(),
-                'path': os.path.join(self.pk_folder_path, '%s.mp4' % (self.pk,)).__str__(),
+                # 'path': os.path.join(self.pk_folder_path, '%s.mp4' % (self.pk,)).__str__(),
                 'media_type': 2
             }
             resources.append(resource_dict)
@@ -59,14 +59,14 @@ class DirectoryDownload(InstagramData, Instagram, threading.Thread):
                     resource_dict = {
                         'pk': resource.get('pk'),
                         'url': resource.get('thumbnail_url').__str__(),
-                        'path': os.path.join(self.pk_folder_path, '%s - %s.jpg' % (i, resource.get('pk'),)).__str__(),
+                        # 'path': os.path.join(self.pk_folder_path, '%s - %s.jpg' % (i, resource.get('pk'),)).__str__(),
                         'media_type': 1
                     }
                 else:  # video
                     resource_dict = {
                         'pk': resource.get('pk'),
                         'url': resource.get('video_url').__str__(),
-                        'path': os.path.join(self.pk_folder_path, '%s - %s.mp4' % (i, resource.get('pk'),)).__str__(),
+                        # 'path': os.path.join(self.pk_folder_path, '%s - %s.mp4' % (i, resource.get('pk'),)).__str__(),
                         'media_type': 2
                     }
                 resources.append(resource_dict)
@@ -88,9 +88,16 @@ class DirectoryDownload(InstagramData, Instagram, threading.Thread):
 
             # download
             resource_path_list = []
+            i = 0
             for resource in self.resources:
-                request.urlretrieve(resource.get('url'), resource.get('path'))
-                resource_path_list.append(resource.get('path'))
+                i += 1
+                if resource.get('media_type') == 1:  # photo
+                    resource_path = os.path.join(self.pk_folder_path, '%s - %s.jpg' % (i, resource.get('pk'),))
+                    request.urlretrieve(resource.get('url'), resource_path)
+                else:  # video
+                    resource_path = os.path.join(self.pk_folder_path, '%s - %s.mp4' % (i, resource.get('pk'),))
+                    request.urlretrieve(resource.get('url'), resource_path)
+                resource_path_list.append(resource_path)
                 print('--- downloaded:', resource.get('path'))
             else:
                 return resource_path_list
