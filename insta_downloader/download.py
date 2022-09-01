@@ -84,7 +84,7 @@ class DirectoryDownload(InstagramData, Instagram, threading.Thread):
         else:
             # create folder
             if not os.path.exists(self.pk_folder_path):
-                os.mkdir(self.pk_folder_path)
+                os.mkdir(str(self.pk_folder_path))
             # download
             resource_path_list = []
             for resource in self.resources:
