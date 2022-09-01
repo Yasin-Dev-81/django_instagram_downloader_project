@@ -35,43 +35,46 @@ class DirectoryDownload(InstagramData, Instagram, threading.Thread):
             self.set_media_type()
         print('---', self.media_type)
         resources = []
-        if self.media_type == 1:  # photo
-            resource_dict = {
-                'pk': self.pk,
-                'url': self.data.get('thumbnail_url').__str__(),
-                'path': os.path.join(self.pk_folder_path, '%s.jpg' % (self.pk,)),
-                'media_type': 1
-            }
-            resources.append(resource_dict)
-        elif self.media_type == 2:  # video
-            resource_dict = {
-                'pk': self.pk,
-                'url': self.data.get('video_url').__str__(),
-                'path': os.path.join(self.pk_folder_path, '%s.mp4' % (self.pk,)),
-                'media_type': 2
-            }
-            resources.append(resource_dict)
-        else:  # multy
-            i = 0
-            for resource in dict(self.data).get('resources'):
-                i += 1
-                if resource.get('media_type') == 1:  # photo
-                    resource_dict = {
-                        'pk': resource.get('pk'),
-                        'url': resource.get('thumbnail_url').__str__(),
-                        'path': os.path.join(self.pk_folder_path, '%s - %s.jpg' % (i, resource.get('pk'),)),
-                        'media_type': 1
-                    }
-                else:  # video
-                    resource_dict = {
-                        'pk': resource.get('pk'),
-                        'url': resource.get('video_url').__str__(),
-                        'path': os.path.join(self.pk_folder_path, '%s - %s.mp4' % (i, resource.get('pk'),)),
-                        'media_type': 2
-                    }
+        try:
+            if self.media_type == 1:  # photo
+                resource_dict = {
+                    'pk': self.pk,
+                    'url': self.data.get('thumbnail_url').__str__(),
+                    'path': os.path.join(self.pk_folder_path, '%s.jpg' % (self.pk,)),
+                    'media_type': 1
+                }
                 resources.append(resource_dict)
-        self.resources = resources
-        return self.resources
+            elif self.media_type == 2:  # video
+                resource_dict = {
+                    'pk': self.pk,
+                    'url': self.data.get('video_url').__str__(),
+                    'path': os.path.join(self.pk_folder_path, '%s.mp4' % (self.pk,)),
+                    'media_type': 2
+                }
+                resources.append(resource_dict)
+            else:  # multy
+                i = 0
+                for resource in dict(self.data).get('resources'):
+                    i += 1
+                    if resource.get('media_type') == 1:  # photo
+                        resource_dict = {
+                            'pk': resource.get('pk'),
+                            'url': resource.get('thumbnail_url').__str__(),
+                            'path': os.path.join(self.pk_folder_path, '%s - %s.jpg' % (i, resource.get('pk'),)),
+                            'media_type': 1
+                        }
+                    else:  # video
+                        resource_dict = {
+                            'pk': resource.get('pk'),
+                            'url': resource.get('video_url').__str__(),
+                            'path': os.path.join(self.pk_folder_path, '%s - %s.mp4' % (i, resource.get('pk'),)),
+                            'media_type': 2
+                        }
+                    resources.append(resource_dict)
+            self.resources = resources
+            return self.resources
+        except Exception:
+            print(Exception)
 
     def download(self):
         self.pk_folder_path = os.path.join(self.main_folder_path, str(self.pk))
