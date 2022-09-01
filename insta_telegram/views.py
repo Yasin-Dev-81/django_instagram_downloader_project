@@ -14,7 +14,7 @@ tbot = telebot.TeleBot(TELEGRAM_TOKEN)
 
 
 @csrf_exempt
-def bot(request):
+def webhook_view(request):
     if request.META['CONTENT_TYPE'] == 'application/json':
 
         json_data = request.body.decode('utf-8')
