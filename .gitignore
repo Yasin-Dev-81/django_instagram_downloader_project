@@ -1,5 +1,6 @@
 venv/
 .idea/
+__pycache__/
 bot.py
 download.py
 main.py
