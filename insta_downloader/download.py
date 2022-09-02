@@ -1,75 +1,159 @@
+import time
+import zipfile
+from .zip_dir import zipdir
+
+from urllib import request
+import threading
+import os
+
+from .data import InstagramData
 from .instagram import Instagram
 
-import requests
+from telebot import types
 
 
-class InstagramData(Instagram):
-    def __init__(self, sessionid_list):
-        super().__init__()
-        self.login_with_sessionid(sessionid_list=sessionid_list)
-        self.data = {}
-        self.pk = None
-        self.url = None
-        self.media_type = 0
-        self.stories = False
-        self.page = False
-        self.highlight = False
+class DirectoryDownload(InstagramData, Instagram, threading.Thread):
+    def __init__(self, folder_path, sessionid_list: list):
+        super().__init__(sessionid_list=sessionid_list)
+        self.zip_path = None
+        self.pk_folder_path = None
+        self.main_folder_path = folder_path
+        self.resources = []
 
-    def type_inspector_with_url(self, url: str, to_get: bool = True):
-        if to_get:
-            self.url = requests.get(url=url).url
-        else:
-            self.url = url
-        if '/stories/' in self.url:
-            print('--- type: stories')
-            self.stories = True
-        elif ('/p/' in self.url) or ('/reel/' in self.url) or ('/tv/' in self.url):
-            print('--- type: media')
-            self.stories = False
-        elif '/s/' in self.url:
-            print('--- type: highlight')
-            self.highlight = True
-        else:
-            print('--- type: page')
-            self.page = True
-
-    def type_inspector_with_pk(self, pk: int, stories: bool):
-        self.pk = pk
-        self.stories = stories
-
-    def data_inspector_with_url(self):
-        if len(self.data) == 0:
-            if self.stories:  # stories
-                self.pk = self.instagram_client.story_pk_from_url(self.url)
-                print('--- story pk:', self.pk)
-                self.data = self.instagram_client.story_info(self.pk).dict()
-            elif self.page:
-                print('--- page pk:', self.pk)
+    def is_downloaded(self):
+        if os.path.exists(self.pk_folder_path):
+            files_list = os.listdir(self.pk_folder_path)
+            if len(files_list) == 0:
+                return False
             else:
-                self.pk = self.instagram_client.media_pk_from_url(self.url)
-                print('--- media pk:', self.pk)
-                self.data = self.instagram_client.media_info(self.pk).dict()
-        self.set_media_type()
-        return self.data
+                return True
 
-    def data_inspector_with_pk(self):
+    def get_resources(self):
         if len(self.data) == 0:
-            if self.stories:
-                print('--- story pk')
-                self.data = self.instagram_client.story_info(self.pk).dict()
-            elif self.page:
-                print('--- page pk')
+            self.data_inspector_with_url()
+        if self.media_type == 0:
+            self.set_media_type()
+        print('---', self.media_type)
+        resources = []
+        if self.media_type == 1:  # photo
+            resource_dict = {
+                'pk': self.pk,
+                'url': self.data.get('thumbnail_url').__str__(),
+                # 'path': os.path.join(self.pk_folder_path, '%s.jpg' % (self.pk,)),
+                'media_type': 1
+            }
+            resources.append(resource_dict)
+        elif self.media_type == 2:  # video
+            resource_dict = {
+                'pk': self.pk,
+                'url': self.data.get('video_url').__str__(),
+                # 'path': os.path.join(self.pk_folder_path, '%s.mp4' % (self.pk,)).__str__(),
+                'media_type': 2
+            }
+            resources.append(resource_dict)
+        else:  # multy
+            i = 0
+            for resource in dict(self.data).get('resources'):
+                i += 1
+                if resource.get('media_type') == 1:  # photo
+                    resource_dict = {
+                        'pk': resource.get('pk'),
+                        'url': resource.get('thumbnail_url').__str__(),
+                        # 'path': os.path.join(self.pk_folder_path, '%s - %s.jpg' % (i, resource.get('pk'),)).__str__(),
+                        'media_type': 1
+                    }
+                else:  # video
+                    resource_dict = {
+                        'pk': resource.get('pk'),
+                        'url': resource.get('video_url').__str__(),
+                        # 'path': os.path.join(self.pk_folder_path, '%s - %s.mp4' % (i, resource.get('pk'),)).__str__(),
+                        'media_type': 2
+                    }
+                resources.append(resource_dict)
+        self.resources = resources
+        return self.resources
+
+    def download(self):
+        self.pk_folder_path = os.path.join(self.main_folder_path, str(self.pk))
+        if self.is_downloaded():
+            print('---- The file has already been downloaded')
+        elif self.page:
+            pass
+        elif len(self.resources) == 0:
+            self.get_resources()
+        else:
+            # create folder
+            if not os.path.exists(self.pk_folder_path):
+                os.mkdir(str(self.pk_folder_path))
+
+            # download
+            resource_path_list = []
+            i = 0
+            for resource in self.resources:
+                i += 1
+                if resource.get('media_type') == 1:  # photo
+                    resource_path = os.path.join(self.pk_folder_path, '%s - %s.jpg' % (i, resource.get('pk'),))
+                    request.urlretrieve(resource.get('url'), resource_path)
+                else:  # video
+                    resource_path = os.path.join(self.pk_folder_path, '%s - %s.mp4' % (i, resource.get('pk'),))
+                    request.urlretrieve(resource.get('url'), resource_path)
+                resource_path_list.append(resource_path)
+                print('--- downloaded:', resource.get('path'))
             else:
-                print('--- media pk')
-                self.data = self.instagram_client.media_info(self.pk).dict()
-        self.set_media_type()
-        return self.data
+                return resource_path_list
 
-    def downloadable(self):
-        if self.page or self.highlight:
-            return False
-        return True
+    def input_medias(self, caption: str = '', parse_mode: str = 'html'):
+        capt = False
+        input_medias = []
+        self.get_resources()
+        for resource in self.resources:
+            if resource.get('media_type') == 1:
+                if capt:
+                    input_medias.append(
+                        types.InputMediaPhoto(resource.get('url'))
+                    )
+                else:
+                    input_medias.append(
+                        types.InputMediaPhoto(
+                            resource.get('url'),
+                            caption=caption,
+                            parse_mode=parse_mode
+                        )
+                    )
+                    capt = True
+            elif resource.get('media_type') == 2:
+                if capt:
+                    input_medias.append(
+                        types.InputMediaVideo(resource.get('url'))
+                    )
+                else:
+                    input_medias.append(
+                        types.InputMediaVideo(
+                            resource.get('url'),
+                            caption=caption,
+                            parse_mode=parse_mode
+                        )
+                    )
+        else:
+            print('--- input medias:', input_medias)
+            return input_medias
 
-    def set_media_type(self):
-        self.media_type = self.data.get('media_type')
-        return True
+    def zip_download(self):
+        self.zip_path = os.path.join(self.main_folder_path, '%s.zip' % self.pk)
+        if self.zip_is_downloaded():
+            print('---- The file has already been downloaded')
+        else:
+            if not self.is_downloaded():
+                self.download()
+            with zipfile.ZipFile(self.zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+                zipdir(
+                    self.pk_folder_path,
+                    zipf
+                )
+
+    def zip_is_downloaded(self):
+        return os.path.exists(self.zip_path)
+
+    def start(self) -> None:
+        self.download()
+        self.zip_download()
