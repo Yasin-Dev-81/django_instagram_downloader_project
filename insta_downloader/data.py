@@ -20,13 +20,13 @@ class InstagramData(Instagram):
             self.url = requests.get(url=url).url
         else:
             self.url = url
-        if '/stories/' in self.url:
+        if '/stories/' in self.url and not('/highlights/' in self.url):
             print('--- type: stories')
             self.stories = True
         elif ('/p/' in self.url) or ('/reel/' in self.url) or ('/tv/' in self.url):
             print('--- type: media')
             self.stories = False
-        elif '/highlights/' in self.url:
+        elif '/stories/highlights/' in self.url:
             print('--- type: highlight')
             self.highlight = True
         else:
