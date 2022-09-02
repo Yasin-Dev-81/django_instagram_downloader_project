@@ -26,7 +26,7 @@ class InstagramData(Instagram):
         elif ('/p/' in self.url) or ('/reel/' in self.url) or ('/tv/' in self.url):
             print('--- type: media')
             self.stories = False
-        elif '/s/' in self.url:
+        elif '/highlights/' in self.url:
             print('--- type: highlight')
             self.highlight = True
         else:
