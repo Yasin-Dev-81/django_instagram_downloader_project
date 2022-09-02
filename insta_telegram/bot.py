@@ -70,9 +70,7 @@ def instagram(message):
                 insta_cl.start()
                 bot.send_message(
                     chat_id=message.chat.id,
-                    text="This post cannot be uploaded in Telegram, please download from the site!\n{url}".format(
-                        reverse('instagram_url').__str__()
-                    ),
+                    text="This post cannot be uploaded in Telegram, please download from the site!",
                     disable_notification=False,
                     protect_content=False,
                     reply_to_message_id=message.message_id,
