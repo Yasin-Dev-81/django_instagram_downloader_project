@@ -13,18 +13,22 @@ class InstagramData(Instagram):
         self.media_type = 0
         self.stories = False
         self.page = False
+        self.highlight = False
 
     def type_inspector_with_url(self, url: str, to_get: bool = True):
         if to_get:
             self.url = requests.get(url=url).url
         else:
             self.url = url
-        if 'stories' in self.url:
+        if '/stories/' in self.url:
             print('--- type: stories')
             self.stories = True
         elif ('/p/' in self.url) or ('/reel/' in self.url) or ('/tv/' in self.url):
             print('--- type: media')
             self.stories = False
+        elif '/s/' in self.url:
+            print('--- type: highlight')
+            self.highlight = True
         else:
             print('--- type: page')
             self.page = True
@@ -62,8 +66,8 @@ class InstagramData(Instagram):
         return self.data
 
     def downloadable(self):
-        if self.page:
-            return True
+        if self.page or self.highlight:
+            return False
         return True
 
     def set_media_type(self):
