@@ -65,12 +65,6 @@ def instagram(message):
                     reply_to_message_id=message.message_id,
                     allow_sending_without_reply=True,
                 )
-                if len(tel_input_medias) != 0:
-                    bot.send_message(
-                        chat_id=message.chat.id,
-                        text=caption_tel,
-                        parse_mode='html',
-                    )
             except Exception:
                 insta_cl.start()
                 bot.send_message(
