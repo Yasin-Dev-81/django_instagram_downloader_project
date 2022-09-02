@@ -19,7 +19,9 @@ def send_welcome(message):
     print(message)
     bot.reply_to(
         message,
-        "Howdy {name},\nEnter the URL to the post, story or highlight and I'll download it for you.".format(name=message.from.first_name)
+        "Howdy {name},\nEnter the URL to the post, story or highlight and I'll download it for you.".format(
+            name=message.chat.first_name
+        )
     )
     if __name__ != '__main__':
         pass
