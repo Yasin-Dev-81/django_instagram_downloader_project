@@ -25,22 +25,29 @@ def instagram_view(request):
             folder_path=os.path.join(settings.MEDIA_ROOT, 'instagram_downloaded')
         )
         cl.type_inspector_with_url(url=instagram_url)
-        cl.data_inspector_with_url()
-        if request.user.is_authenticated:
-            cl.start()
-            print('---- download is started:)')
-        return render(
-            request=request,
-            template_name='insta_web/instagram_search.html',
-            context={
-                'instagram_data': cl.data,
-                'instagram_post_type': not cl.stories,
-                'stories': cl.stories,
-                'post_method': True,
-                'instagram_url': instagram_url,
-                'is_page': cl.page
-            }
-        )
+        if cl.downloadable():
+            cl.data_inspector_with_url()
+            if request.user.is_authenticated:
+                cl.start()
+                print('---- download is started:)')
+            return render(
+                request=request,
+                template_name='insta_web/instagram_search.html',
+                context={
+                    'instagram_data': cl.data,
+                    'instagram_post_type': not cl.stories,
+                    'stories': cl.stories,
+                    'post_method': True,
+                    'instagram_url': instagram_url,
+                    'is_page': cl.page
+                }
+            )
+        else:
+            return render(
+                request=request,
+                template_name='insta_web/instagram_search.html',
+                context={'post_method': False, }
+            )
 
 
 @login_required
