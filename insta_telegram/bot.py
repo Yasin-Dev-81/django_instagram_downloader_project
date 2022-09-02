@@ -2,7 +2,6 @@ import requests
 import telebot
 from telebot import types
 
-from config import settings
 from insta_downloader import DirectoryDownload
 from config.settings import TELEGRAM_TOKEN, MEDIA_ROOT
 
@@ -18,7 +17,12 @@ bot = telebot.TeleBot(TELEGRAM_TOKEN, threaded=False)
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
     print(message)
-    bot.reply_to(message, "Howdy, how are you doing?")
+    bot.reply_to(
+        message,
+        "Howdy {name},\nEnter the URL to the post, story or highlight and I'll download it for you.".format(name=message.from.first_name)
+    )
+    if __name__ != '__main__':
+        pass
 
 
 @bot.message_handler(func=lambda message: True)
@@ -50,14 +54,21 @@ def instagram(message):
                 ctime=insta_cl.data.get('taken_at').ctime(),
             )
             try:
+                tel_input_medias = insta_cl.input_medias(caption=caption_tel)
                 bot.send_media_group(
                     chat_id=message.chat.id,
-                    media=insta_cl.input_medias(caption=caption_tel),
+                    media=tel_input_medias,
                     disable_notification=False,
                     protect_content=False,
                     reply_to_message_id=message.message_id,
                     allow_sending_without_reply=True,
                 )
+                if len(tel_input_medias) != 0:
+                    bot.send_message(
+                        chat_id=message.chat.id,
+                        text=caption_tel,
+                        parse_mode='html',
+                    )
             except Exception:
                 insta_cl.start()
                 bot.send_message(
@@ -77,11 +88,6 @@ def instagram(message):
             )
             bot.send_message(
                 chat_id=message.chat.id,
-                text=caption_tel,
-                parse_mode='html',
-            )
-            bot.send_message(
-                chat_id=message.chat.id,
                 text="<i>📃caption:</i> <code>{caption}</code>".format(caption=insta_cl.data.get('caption_text')),
                 parse_mode='html',
                 reply_markup=url_markup
@@ -95,7 +101,6 @@ def instagram(message):
             bot.reply_to(message, "This link cannot be downloaded with this robot!")
     else:
         bot.reply_to(message, "This link does not belong to Instagram!")
-
 
 
 if __name__ == '__main__':
