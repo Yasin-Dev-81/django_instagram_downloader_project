@@ -4,8 +4,9 @@ import datetime
 
 from telebot import types
 
-from config import settings
-from insta_downloader import DirectoryDownload, InstagramData
+from config.settings import MEDIA_ROOT
+from insta_downloader import DirectoryDownload
+from insta_web.models import InstagramData
 
 
 class TelTasksForInstaLink:
@@ -18,9 +19,9 @@ class TelTasksForInstaLink:
         self.bot = bot
         self.insta_cl = DirectoryDownload(
             sessionid_list=[obj.sessionid for obj in InstagramData.objects.filter(active=True)],
-            folder_path=os.path.join(settings.MEDIA_ROOT, 'instagram_downloaded')
+            folder_path=os.path.join(MEDIA_ROOT, 'instagram_downloaded')
         )
-        self.url = self.valid_url()
+        self.url = None
 
     def send_hourglass_message(self):
         self.hourglass_message = self.bot.reply_to(self.message, '\U000023F3')
