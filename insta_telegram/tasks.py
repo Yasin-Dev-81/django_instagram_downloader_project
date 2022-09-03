@@ -2,6 +2,7 @@ import os
 import requests
 import datetime
 
+import telebot
 from telebot import types
 
 from config.settings import MEDIA_ROOT
@@ -51,25 +52,25 @@ class TelTasksForInstaLink:
 
     def send_medias(self):
         tel_input_medias = self.insta_cl.input_medias()
-        # try:
-        self.bot.send_media_group(
-            chat_id=self.message.chat.id,
-            media=tel_input_medias,
-            disable_notification=False,
-            protect_content=False,
-            reply_to_message_id=self.message.message_id,
-            allow_sending_without_reply=True,
-        )
-        # except Exception:
-        #     for tel_input_media in tel_input_medias:
-        #         self.bot.send_media_group(
-        #             chat_id=self.message.chat.id,
-        #             media=tel_input_media,
-        #             disable_notification=False,
-        #             protect_content=False,
-        #             reply_to_message_id=self.message.message_id,
-        #             allow_sending_without_reply=True,
-        #         )
+        try:
+            self.bot.send_media_group(
+                chat_id=self.message.chat.id,
+                media=tel_input_medias,
+                disable_notification=False,
+                protect_content=False,
+                reply_to_message_id=self.message.message_id,
+                allow_sending_without_reply=True,
+            )
+        except telebot.apihelper.ApiTelegramException:
+            for tel_input_media in tel_input_medias:
+                self.bot.send_media_group(
+                    chat_id=self.message.chat.id,
+                    media=tel_input_media,
+                    disable_notification=False,
+                    protect_content=False,
+                    reply_to_message_id=self.message.message_id,
+                    allow_sending_without_reply=True,
+                )
 
     def send_captions(self):
         caption_tel = """
