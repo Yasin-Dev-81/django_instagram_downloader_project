@@ -18,7 +18,7 @@ class TelTasksForInstaLink:
         # client's
         self.bot = bot
         self.insta_cl = DirectoryDownload(
-            sessionid_list=[obj.sessionid for obj in models.InstagramData.actives_manager()],
+            sessionid_list=[obj.sessionid for obj in models.InstagramData.objects.filter(active=True)],
             folder_path=os.path.join(MEDIA_ROOT, 'instagram_downloaded')
         )
         self.url = None
