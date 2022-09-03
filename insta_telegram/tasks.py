@@ -16,11 +16,11 @@ class TelTasksForInstaLink:
         self.message = message
         # client's
         self.bot = bot
-        self.url = self.valid_url()
         self.insta_cl = DirectoryDownload(
             sessionid_list=[obj.sessionid for obj in InstagramData.objects.filter(active=True)],
             folder_path=os.path.join(settings.MEDIA_ROOT, 'instagram_downloaded')
         )
+        self.url = self.valid_url()
 
     def send_hourglass_message(self):
         self.hourglass_message = self.bot.reply_to(self.message, '\U000023F3')
