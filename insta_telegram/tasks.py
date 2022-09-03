@@ -65,7 +65,7 @@ class TelTasksForInstaLink:
             for tel_input_media in tel_input_medias:
                 self.bot.send_media_group(
                     chat_id=self.message.chat.id,
-                    media=tel_input_media,
+                    media=[tel_input_media],
                     disable_notification=False,
                     protect_content=False,
                     reply_to_message_id=self.message.message_id,
