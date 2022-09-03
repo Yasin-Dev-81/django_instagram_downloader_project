@@ -1,3 +1,4 @@
+import instagrapi
 import requests
 from instagrapi import Client
 from instagrapi.exceptions import LoginRequired
@@ -16,9 +17,7 @@ class Instagram:
                 self.instagram_client.login_by_sessionid(sessionid=sessionid)
                 print('--- logged in with sessionid:', sessionid)
                 break
-            except LoginRequired or AttributeError:
-                continue
-            except requests.exceptions.TooManyRedirects:
+            except instagrapi.exceptions.LoginRequired or AttributeError or requests.exceptions.TooManyRedirects:
                 continue
         else:
             print('--- Not logged in!')
