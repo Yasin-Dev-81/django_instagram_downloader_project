@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     'accounts',
     'pages',
     'insta_web',
-    # 'insta_telegram',
+    'insta_telegram',
 ]
 
 MIDDLEWARE = [
