@@ -1,6 +1,10 @@
+import os
+
 import telebot
 
-from config.settings import TELEGRAM_TOKEN
+from config.settings import TELEGRAM_TOKEN, MEDIA_ROOT
+from insta_downloader import DirectoryDownload
+from insta_web.models import InstagramData
 from .tasks import TelTasksForInstaLink
 
 
@@ -25,6 +29,7 @@ def instagram(message):
     try:
         try:
             cl = TelTasksForInstaLink(bot, message)
+            cl.valid_url()
             cl.send_hourglass_message()
             cl.inspect_type_and_data()
             cl.send_medias()
