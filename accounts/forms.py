@@ -33,6 +33,22 @@ class MyCustomSignupForm(SignupForm):
         # Set the user's type from the form response
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
+     
+
+def add_to_telegram_users(message):
+    try:
+        user = get_object_or_404(TelegramUsers, chat_id=str(message.chat.id))
+        print('--- user is valid.')
+    except Http404:
+        TelegramUsers.objects.create(
+            username=str(message.from_user.username),
+            first_name=str(message.from_user.first_name),
+            last_name=str(message.from_user.last_name),
+            user_id=str(message.from_user.id),
+            chat_id=str(message.chat.id),
+        )
+        print('--- added to database.')
+
         user.age = self.cleaned_data['age']
         # user.phone = self.cleaned_data['phone']
         # user.address = self.cleaned_data['address']
