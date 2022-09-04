@@ -7,7 +7,7 @@ from config.settings import TELEGRAM_TOKEN, MEDIA_ROOT
 from insta_downloader import DirectoryDownload
 from insta_web.models import InstagramData
 from .tasks import TelTasksForInstaLink
-from accounts.forms import add_to_telegram_users
+
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN, threaded=False)
 
@@ -22,7 +22,7 @@ def send_welcome(message):
         )
     )
     if __name__ != '__main__':
-        add_to_telegram_users(message)
+        pass
 
 
 @bot.message_handler(func=lambda message: True)
