@@ -2,6 +2,10 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth import get_user_model
 from django import forms
 from allauth.account.forms import SignupForm
+from django.http import Http404
+from django.shortcuts import get_object_or_404
+
+from .models import TelegramUsers
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -33,7 +37,14 @@ class MyCustomSignupForm(SignupForm):
         # Set the user's type from the form response
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
-     
+        user.age = self.cleaned_data['age']
+        # user.phone = self.cleaned_data['phone']
+        # user.address = self.cleaned_data['address']
+        # user.gender = self.cleaned_data['gender']
+
+        # Save the user's type to their database record
+        user.save()
+
 
 def add_to_telegram_users(message):
     try:
@@ -48,11 +59,3 @@ def add_to_telegram_users(message):
             chat_id=str(message.chat.id),
         )
         print('--- added to database.')
-
-        user.age = self.cleaned_data['age']
-        # user.phone = self.cleaned_data['phone']
-        # user.address = self.cleaned_data['address']
-        # user.gender = self.cleaned_data['gender']
-
-        # Save the user's type to their database record
-        user.save()
