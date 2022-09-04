@@ -28,17 +28,16 @@ def send_welcome(message):
 @bot.message_handler(func=lambda message: True)
 def instagram(message):
     try:
-        try:
-            cl = TelTasksForInstaLink(bot, message)
-            cl.valid_url()
-            cl.send_hourglass_message()
-            cl.inspect_type_and_data()
-            cl.send_medias()
-            cl.delete_additions_messages()
-            cl.send_captions()
-            cl.send_powered()
-        except ValueError:
-            print('--- error:', ValueError)
+        cl = TelTasksForInstaLink(bot, message)
+        cl.valid_url()
+        cl.send_hourglass_message()
+        cl.inspect_type_and_data()
+        cl.send_medias()
+        cl.delete_additions_messages()
+        cl.send_captions()
+        cl.send_powered()
+    except ValueError:
+        print('--- error:', ValueError)
     except telebot.apihelper.ApiTelegramException:
         print('--- user blocked this bot!')
 
