@@ -1,4 +1,6 @@
 import os
+
+import instagrapi
 import requests
 import datetime
 
@@ -44,8 +46,11 @@ class TelTasksForInstaLink:
     def inspect_type_and_data(self):
         self.insta_cl.type_inspector_with_url(self.insta_cl.url, to_get=False)
         if self.insta_cl.downloadable():
-            self.download_message = self.bot.reply_to(self.message, 'The download started from the Instagram server...')
-            self.insta_cl.data_inspector_with_url()
+            try:
+                self.download_message = self.bot.reply_to(self.message, 'The download started from the Instagram server...')
+                self.insta_cl.data_inspector_with_url()
+            except instagrapi.exceptions.UnknownError:
+                self.bot.reply_to(self.message, 'Media not found or unavailable or accounts private!')
         else:
             self.message.reply_to(self.message, "This link cannot be downloaded with this robot!")
             raise ValueError('This link cannot be downloaded with this robot!')
