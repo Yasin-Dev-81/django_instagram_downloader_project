@@ -6,7 +6,7 @@
 <span><img src="https://img.shields.io/badge/PostgreSQL-316192?style=flat&logo=postgresql&logoColor=white" /></span>
 
 Instagram downloader website using Django and postgresSQL
-Live project: https://django-instagram-downloader.herokuapp.com/
+* Live project: https://django-instagram-downloader.herokuapp.com/
 
 # How to use?
 
