@@ -15,7 +15,7 @@ Live project: https://django-instagram-downloader.herokuapp.com/
 First clone the project.
 
 ```bash
-git clone https://github.com/Yasin-Dev-81/django_personal_website_project.git
+git clone https://github.com/Yasin-Dev-81/django_instagram_downloader_project.git
 ```
 
 Then make sure Docker is running.
